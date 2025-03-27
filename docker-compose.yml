@@ -1,0 +1,15 @@
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'adminSenha'
+      MYSQL_DATABASE: 'daily-diet'
+      MYSQL_ROOT_PASSWORD: 'adminSenha'
+    ports:
+      - "3306:3306"
+    expose:
+      - '3306'
+    volumes:
+      - /Users/joaopedroldavid/Diretório - VSCode/RocketSeat/Python/Daily_Diet_API/MySQL:/var/lib/mysql
