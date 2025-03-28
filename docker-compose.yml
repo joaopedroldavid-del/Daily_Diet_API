@@ -8,7 +8,7 @@ services:
       MYSQL_DATABASE: 'daily-diet'
       MYSQL_ROOT_PASSWORD: 'adminSenha'
     ports:
-      - "3306:3306"
+      - "3307:3306"
     expose:
       - '3306'
     volumes:
