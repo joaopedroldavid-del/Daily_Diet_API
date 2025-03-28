@@ -5,24 +5,26 @@ from database import db
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secretKey"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://admin:adminSenha@localhost:3307/daily-diet'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
 @app.route("/register", methods=["POST"])
 def create_meal():
-    data = request.json
-    food = data.get("food")
-    description = data.get("description")
-    timetable = data.get("timetable")
-    fl_diet = data.get("fl_diet")
+    data = request.get_json()
 
-    if food and description and timetable and fl_diet:
-        meal = Meal(food=food, description=description, timetable=timetable, fl_diet=fl_diet)
-        db.session.add(meal)
-        db.session.commit()
-        return jsonify({"message": "Refição cadastrada com sucesso!"})
+    if not data:  
+        return jsonify({"message": "Dados inválidos"}), 400
 
-    return jsonify({"message": "Dados inválidos"}), 400
+    required_fields = ["food", "description", "timetable", "fl_diet"]
+    if not all(field in data for field in required_fields):  
+        return jsonify({"message": "Campos obrigatórios ausentes"}), 400
+
+    meal = Meal(**data)
+    db.session.add(meal)
+    db.session.commit()
+    return jsonify({"message": "Refeição cadastrada com sucesso"}), 201
+
 
 @app.route("/meal", methods=["GET"])
 def all_meals():
