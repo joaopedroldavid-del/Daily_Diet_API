@@ -29,15 +29,9 @@ def create_meal():
 @app.route("/meal", methods=["GET"])
 def all_meals():
     meals = Meal.query.all()
-    meals_details = [
-        {
-            "id": meal.id,
-            "food": meal.food,
-            "description": meal.description,
-            "timetable": meal.timetable,
-            "fl_diet": meal.fl_diet
-    } for meal in meals
-    ]
+    
+    meals_details = [meal.to_dict() for meal in meals] 
+    
     return jsonify({"Meals": meals_details})
 
 @app.route("/meal/<int:id_meal>", methods=["GET"])
@@ -45,20 +39,13 @@ def get_meal(id_meal):
     meal = Meal.query.get(id_meal)
 
     if meal:
-            meal_details = [{
-                "id": meal.id,
-                "food": meal.food,
-                "description": meal.description,
-                "timetable": meal.timetable,
-                "fl_diet": meal.fl_diet
-                }]
-            return jsonify({"Meal": meal_details})
+        return jsonify({"Meal": meal.to_dict()})
     
     return jsonify({"message": "Refeição não encontrada"}), 404
 
 @app.route("/meal/<int:id_meal>", methods=["PUT"])
 def update_meal(id_meal):
-    data = request.json
+    data = request.get_json()
     meal = Meal.query.get(id_meal)
 
     if meal:
